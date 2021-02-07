@@ -1,5 +1,5 @@
 {
-  "name": "tmp_authentication_cookie",
+  "name": "tmp_authentication_session_cookie",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    if is_logined === true
+        form(action="/logout")
+            input(type="submit" value="로그아웃" )
+        h3 현재 상태 : 로그인
+    else
+        h3 현재 상태 : 로그아웃
+    h1 
+        a(href="/") WEB
+    form(action="/login_process" method="post")
+        p
+            input(type="text" name="email" placeholder="email")
+        p
+            input(type="password" name="pwd" placeholder="password")
+        p
+            input(type="submit" value="login")
