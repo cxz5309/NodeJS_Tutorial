@@ -1,45 +1,28 @@
-module.exports = function (app) {
+var passport = require('passport')
+  , LocalStrategy = require('passport-local').Strategy;
 
-    var onlyMyAuthData = {
-        email: "cxz5309@naver.com",
-        password: "123",
-        name: "kim"
-    }
-    var passport = require('passport'),
-        LocalStrategy = require('passport-local').Strategy;
-
-    app.use(passport.initialize());
-    app.use(passport.session());
-
-    passport.serializeUser(function (user, done) {
-        done(null, user.email);
-    });
-
-    passport.deserializeUser(function (id, done) {
-        done(null, onlyMyAuthData);
-    });
-
-    passport.use(new LocalStrategy({
-            usernameField: 'email',
-            passwordField: 'pwd'
-        },
-        function (username, password, done) {
-            if (username === onlyMyAuthData.email) {
-                if (password === onlyMyAuthData.password) {
-                    return done(null, onlyMyAuthData, {
-                        message: 'Welcome.'
-                    });
-                } else {
-                    return done(null, false, {
-                        message: 'Incorrect password.'
-                    });
-                }
-            } else {
-                return done(null, false, {
-                    message: 'Incorrect username.'
-                });
-            }
+passport.use(
+    new LocalStrategy(
+      {
+        usernameField: "id",
+        passwordField: "pw"
+      },
+      (id, pw, done) => {
+        const user = {
+          id: "whwlsvy12",
+          pw: "1234"
+        };
+        console.log(1111);
+        if (id === user.id && pw === user.pw) {
+          done(null, user);
         }
-    ));
-    return passport;
-}
+      }
+    )
+);
+passport.serializeUser(function (user, done) {
+    done(null, user.id);
+});
+  
+passport.deserializeUser(function (id, done) {
+    done(null, id);
+});

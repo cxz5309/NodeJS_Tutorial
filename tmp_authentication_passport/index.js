@@ -1,84 +1,52 @@
-var express = require('express')
-var parseurl = require('parseurl')
-var session = require('express-session')
-var FileStore = require('session-file-store')(session)
-var passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy;
-var flash = require('connect-flash');
+import express from "express";
+import session from "express-session";
+import passport from "passport";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import FileStore from 'session-file-store'
+import "./passport";
 
-var app = express()
-
-
-app.set("view engine", "pug");
+const app = express();
 
 app.use(express.json())
 app.use(express.urlencoded( {extended : false } ));
 
 app.use(session({
-    secret: 'asadlfkj!@#!@#dfgasdg',
+    secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
     store:new FileStore()
 }))
-app.use(flash());
 
-var passport = require('./passport')(app);
+app.use(passport.initialize());                    // passport 동작
+app.use(passport.session());                       // passport.deserializeUser 실행
 
-app.post('/login_process',
-passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/auth',
-  failureFlash: true,
-  successFlash: true
-}));
+app.set("view engine", "pug");
 
-app.get('/', function (req, res, next) {
-    passport.authenticate('local', function(err, user, info) {
+app.get("/", (req, res) => {
+    res.render("index");
+});
 
-        req.logIn(user, function(err) {        
-            console.log("user : " + user);
+app.post("/login", (req, res, next) => {
 
-            if(user.num === undefined){
-                console.log("user.num === undrfined");
-                user.num = 1;
-            } else {
-                user.num =  user.num + 1;
+    passport.authenticate("local", (authError, user, info) => { // passport/localStrategy.js를 실행시킵니다.  (1)
+      
+        return req.login(user, loginError => {
+            if (loginError) {
+            console.error(loginError);
             }
-            if(user.is_logined === undefined){
-                console.log("user.is_logined === undrfined");
-                user.is_logined = false;
-            }
-            if (err) { console.log(err); }
-
-            return res.render('home', { title: 'Hey', is_logined: user.is_logined});
         });
     })(req, res, next);
+  
+    res.redirect("/success");
 });
-//     console.log("passport.user : " + passport.user);
 
-//     if(!passport.user){
-//         res.render('home', { title: 'Hey', is_logined: false});
-//     }
-//     else{
-//         if(req.user.num === undefined){
-//             req.user.num = 1;
-//         } else {
-//             req.user.num =  req.user.num + 1;
-//         }
-//         if(req.user.is_logined === undefined){
-//             req.user.is_logined = false;
-//         }
-//         res.render('home', { title: 'Hey', is_logined: req.user.is_logined});
-//     }
-// });
 
-app.get('/logout', function (req, res) {
-    req.logout();
-    req.session.save(function () {
-      res.redirect('/');
+app.get("/success", (req, res, next) => {
+    console.log(req.user);
+    res.render("success", {
+        user: req.user
     });
-  });
- 
-app.listen(3000, function () {
-    console.log('3000!');
 });
+
+app.listen(3000);

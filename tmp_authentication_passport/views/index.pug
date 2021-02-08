@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    form(action='/login' method='post')
+        | id:
+        br
+        input(type='text' name='id')
+        br
+        |       pw:
+        br
+        input(type='text' name='pw')
+        br
+        br
+        input(type='submit' value='Submit')
