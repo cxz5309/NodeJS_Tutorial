@@ -9,12 +9,22 @@ passport.use(
       },
       (id, pw, done) => {
         const user = {
-          id: "whwlsvy12",
-          pw: "1234"
+          id: "cxz5309",
+          pw: "123"
         };
-        console.log(1111);
+        console.log("id : " + id);
+        console.log("pw : " + pw);
         if (id === user.id && pw === user.pw) {
-          done(null, user);
+          done(null, user, {message : "Login"});
+        }
+        else if(id !== user.id && pw === user.pw){
+          done(null, false, {message : "Incorrect id"})
+        }
+        else if(id === user.id && pw !== user.pw){
+          done(null, false, {message : "Incorrect password"})
+        }
+        else{
+          done(null, false, {message : "Incorrect all"})
         }
       }
     )
