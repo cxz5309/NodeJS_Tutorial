@@ -1,4 +1,0 @@
-function solution(list1, list2) {
-   const concatList = list1.concat(list2);
-   return concatList;
-}
